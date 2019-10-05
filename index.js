@@ -9,20 +9,15 @@ var app = new Koa();
 
 var router = new Router();
 
-router.get('/api/v1.0', welcomeAPI);
-//http://localhost:3000/api/v1.0 -> at this route, display welcomeAPI
+//http://localhost:3000/api/v1.0 -> at this route, display logIn
 var logIn = require('./routes/logIn.js')
-//use the root routes
-//import the Router we defined in logIn.js
-//var router= require('./routes/logIn.js');
-//apply the routes as a middleware
-app.use(router.routes());
+
+
+//app.use(router.routes());
 app.use(logIn.routes());
 
+//set to be the environment/deployment port number or 3000 if there isnt one
+var port = process.env.PORT || 3000; 
+
 //run the werver on port 3000
-app.listen(3000); 
-
-
-function welcomeAPI(cnx, next){
-cnx.body = {message:'Welcome to Oktob API version 1.0'};
-}
+app.listen(port); 

@@ -1,6 +1,6 @@
 var Router = require('koa-router');
 var router = Router({
-prefix: '/api/v1.0/login'
+prefix: '/api/v1.0'
 }); //Prefixed all routes with /api/v1.0/articles
 
 //because we are going to parse POST parameters we will import koa-bodyparser
