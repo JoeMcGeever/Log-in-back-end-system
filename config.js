@@ -1,4 +1,3 @@
-//this will have to be set to the database we are using :D
 
 exports.config = {
 host: process.env.DB_HOST || "localhost",
