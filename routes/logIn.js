@@ -13,25 +13,30 @@ var router = Router({
 var bodyParser = require('koa-bodyparser');
 
 router.get('/google', async (cnx, next) =>{
-  
-  console.log("HI")
 })
+
+
 
 //note that we have injected the body parser onlyin the POST request
 router.post('/', bodyParser(), async (cnx, next) =>{
 
-    console.log(cnx.request.body);
-
+    //console.log(cnx.request.body);
     //prevent server crash if values is undefined
+    //console.log(cnx.request.body.username);
     let newUser = {
-       email : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.email, 
-       password : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.password,
-       passwordConfirmation: cnx.request.body.values === undefined ? undefined: cnx.request.body.values.passwordConfirmation
+       username : cnx.request.body === undefined ? undefined: cnx.request.body.username, 
+       password : cnx.request.body === undefined ? undefined: cnx.request.body.password,
+
+      // username = cnx.request.body.values.username || undefined,
+      // password = cnx.request.body.values.password || undefined
     };
+
+    console.log(newUser)
+
    try{
-      await model.add(newUser);
+      let id = await model.validate(newUser);
       cnx.response.status = 201;
-      cnx.body = {message:"user was added successfully"};
+      cnx.body = {message:id};
    }
    catch(error){
       cnx.response.status = error.status;
