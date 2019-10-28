@@ -17,19 +17,12 @@ exports.delete = async (id) => {
 
 
         var data = await connection.query(sql);
-        //console.log(data[0].deleted)
-       
-       
-        if(data[0].deleted == 1) {
 
-            console.log("ACCOUNT ALREADY DELETED")
-
-            throw {message:'account already deleted', status : 400}
-
+        if(data.length == 0){
+            throw {message:'user not found', status: 400};
+        } else if (data[0].deleted == 1) {
+            throw {message:'account already deleted', status: 400}
         } else if (data[0].deleted == 0){
-
-            console.log("DELETING")
-
         sql = `UPDATE user 
                    SET deleted = true
                    WHERE id = \'${id}'`;
@@ -37,13 +30,9 @@ exports.delete = async (id) => {
             if (err) throw err;
             console.log("Deleted!");
           });
-        } else {
-            console.log("SCRUBBING")
-            throw {message:'user not found', status : 400};
-        }
+        } 
         await connection.end();
     } catch (error) {
-        await connection.end();
         if(error.status === undefined)
             error.status = 500;
         throw error;

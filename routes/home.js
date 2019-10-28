@@ -26,6 +26,7 @@ router.delete('/delete/:id', bodyParser(), async (cnx, next) =>{
       cnx.body = {message:id};
    }
    catch(error){
+      console.log(error)
       cnx.response.status = error.status;
       cnx.body = {message:error.message};
       console.log("fail")
