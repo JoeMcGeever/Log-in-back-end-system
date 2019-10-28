@@ -12,8 +12,6 @@ var router = Router({
 //because we are going to parse POST parameters we will import koa-bodyparser
 var bodyParser = require('koa-bodyparser');
 
-router.get('/google', async (cnx, next) =>{
-})
 
 
 
