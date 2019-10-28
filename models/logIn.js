@@ -25,7 +25,7 @@ exports.validate = async (user) => {
         }
         //final check is to make sure that email should be unique and never been used in the system
         //note that we needed to escape the ' character in roder to make the sql statement works
-        let sql = `SELECT ID, passwordSalt, password from user WHERE
+        let sql = `SELECT ID, passwordSalt, password, deleted from user WHERE
                     username = \'${user.username}'`;
         const connection = await mysql.createConnection(info.config);
         var data = await connection.query(sql);
@@ -36,6 +36,10 @@ exports.validate = async (user) => {
             salt = data[0].passwordSalt //set salt to be the saved salt for the user
         } catch {
             throw {message:'user not found', status:400}
+        }
+
+        if(data[0].deleted == 1) {
+            throw {message:'account has been deleted', status:400}
         }
 
         let password = bcrypt.hashSync(user.password, salt);
