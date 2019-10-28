@@ -23,9 +23,12 @@ router.post('/', bodyParser(), async (cnx, next) =>{
     //console.log(cnx.request.body);
     //prevent server crash if values is undefined
     //console.log(cnx.request.body.username);
+
+    console.log(cnx.request.body)
+
     let newUser = {
-       username : cnx.request.body === undefined ? undefined: cnx.request.body.username, 
-       password : cnx.request.body === undefined ? undefined: cnx.request.body.password,
+       username : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.username, 
+       password : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.password,
 
       // username = cnx.request.body.values.username || undefined,
       // password = cnx.request.body.values.password || undefined
@@ -41,6 +44,8 @@ router.post('/', bodyParser(), async (cnx, next) =>{
    catch(error){
       cnx.response.status = error.status;
       cnx.body = {message:error.message};
+      //console.log(cnx.body)
+      //console.log(cnx.response.status)
    }
    
 

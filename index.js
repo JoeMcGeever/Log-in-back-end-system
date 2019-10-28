@@ -24,7 +24,7 @@ app.use(logIn.routes());
 app.use(admin.routes())
 //app.use(googleLogin.routes());
 //set to be the environment/deployment port number or 3000 if there isnt one
-var port = process.env.PORT || 3000; 
+var port = process.env.PORT || 5000; 
 
 //run the werver on port 3000
 app.listen(port); 
