@@ -15,6 +15,7 @@ var bodyParser = require('koa-bodyparser');
 
 
 
+
 //note that we have injected the body parser onlyin the POST request
 router.post('/', bodyParser(), async (cnx, next) =>{
 
@@ -35,6 +36,25 @@ router.post('/', bodyParser(), async (cnx, next) =>{
     console.log(newUser)
 
    try{
+      
+
+      //added app.proxy=true in index for this to work
+      //installed koa-useragent
+      const clientIP = cnx.request.ip;
+      console.log(clientIP);
+      //https://stackoverflow.com/questions/29411551/express-js-req-ip-is-returning-ffff127-0-0-1
+      //::ffff:127.0.0.1 is correct, don't worry
+      //::1 = local host
+
+
+      console.log(require('util').inspect(cnx.userAgent))
+
+      const userAgent = require('util').inspect(cnx.userAgent)
+      var browser = "EXTRACT FROM userAgent"
+      var device = "ditto"
+
+
+
       let id = await model.validate(newUser);
       cnx.response.status = 201;
       cnx.body = {message:id};
