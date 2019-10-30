@@ -61,3 +61,29 @@ exports.validate = async (user) => {
         throw error;
     }
 }
+
+exports.saveLogin = async (ip, browser, deviceDetails, succeeded) => {
+    try {
+        //do some server validation here --> might not have collected anything so need to check
+        //actually should always work
+        //unless phantom request :shrug:
+        let success = 1
+
+        //DATE - format YYYY-MM-DD
+        //TIME - format hh:mm:ss
+        if(succeeded == false){
+            success = 0
+        }
+        var d = new Date();
+
+        const attemptDate = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() // get date
+        const timeOfLogin = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() //get the time
+        let sql = `INSERT INTO loginhistory(attemptDate, succeeded, IP, browser, timeOfLogin, deviceDetails) VALUES("${attemptDate}", "${success}", "${ip}", "${browser}", "${timeOfLogin}", "${deviceDetails}")`;
+        const connection = await mysql.createConnection(info.config);
+        var data = await connection.query(sql);
+    } catch(err){
+        if(err.status === undefined)
+            err.status = 500;
+        throw err;
+    }
+}

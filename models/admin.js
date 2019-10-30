@@ -32,12 +32,12 @@ exports.createTables = async ()=> {
 
         sql = `CREATE TABLE loginHistory (
                 ID INT NOT NULL AUTO_INCREMENT,
-                attemptDate DATETIME,
+                attemptDate DATE,
                 succeeded BOOL,
                 IP TEXT,
-                timeOfLogin DATETIME,
-                loggedOutDate DATETIME,
-                deviceTypeID INT,
+                browser TEXT,
+                timeOfLogin TIME,
+                deviceDetails TEXT,
                 PRIMARY KEY (ID)
             )`;
 
