@@ -5,6 +5,11 @@ var passport = require('koa-passport');
 
 var model = require('../models/logIn.js');
 
+//for JWT session
+const jwt = require('jsonwebtoken');
+const secret = process.env.JWT_SECRET || 'geheim'; //secret is the same for every token we sign
+//will be environment variable or our secret
+
 var router = Router({
    prefix: '/api/v1.0/users'
 });  //Prefixed all routes with /api/v1.0/articles
@@ -47,8 +52,8 @@ router.post('/', bodyParser(), async (cnx, next) =>{
       //::ffff:127.0.0.1 is correct, don't worry
       //::1 = local host
 
-
       var userAgent = require('util').inspect(cnx.userAgent)
+
       userAgent = userAgent.slice(1050)
       //console.log(userAgent)
       const userAgentArray = userAgent.split("'");
@@ -60,19 +65,30 @@ router.post('/', bodyParser(), async (cnx, next) =>{
       //https://www.npmjs.com/package/koa-useragent
       //console.log(browser)
       //console.log(deviceDetails)
-
-      let id = await model.validate(newUser);
+      await model.validate(newUser);
       succeeded = true //no errors are ran so logged in successfully
-      await model.saveLogin(clientIP, browser, deviceDetails, succeeded)
+
+
+
+
+      await model.saveLogin(newUser.username, clientIP, browser, deviceDetails, succeeded)
+
+
+      //for JWT session:
+      const payload = { sub: newUser.username }; //sub = subject; usually be a username/id which identifies a user
+      const token = jwt.sign(payload, secret); //payload = actual data we want to store in token
+      //and a secret key that we can sign the token with (only server will know)
+
       cnx.response.status = 201;
-      cnx.body = {message:id};
+      cnx.body = token; //returns in the body, the JWT token
+
+   //   cnx.response.status = 201;
+   //   cnx.body = {message:id};
    }
    catch(error){
-      await model.saveLogin(clientIP, browser, deviceDetails, succeeded)
+      await model.saveLogin(newUser.username, clientIP, browser, deviceDetails, succeeded)
       cnx.response.status = error.status;
-      cnx.body = {message:error.message};
-      //console.log(cnx.body)
-      //console.log(cnx.response.status)
+      cnx.body = error.message;
    }
 
 });
