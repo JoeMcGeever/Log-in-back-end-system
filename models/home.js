@@ -40,6 +40,25 @@ exports.delete = async (id) => {
 }
 
 
+exports.getOne = async (id) => {
+    try {
+
+        let sql = `SELECT * from loginhistory WHERE
+                    id = \'${id}'`;
+        const connection = await mysql.createConnection(info.config);
+        var data = await connection.query(sql);
+
+        if(data.length == 0){
+            throw {message:'not found', status: 400};
+        } 
+        await connection.end();
+        return data
+    } catch (error) {
+        if(error.status === undefined)
+            error.status = 500;
+        throw error;
+    }
+}
 
 
 

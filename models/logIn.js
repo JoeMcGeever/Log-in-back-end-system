@@ -13,7 +13,6 @@ exports.validate = async (user) => {
         //NOTE: FOR USER SAVED IN DB:
         //USERNAME = "Joseph", PASSWORD = "Joseph"
 
-        
         //server validation rules 
         //email is required        
         if(user.username === undefined){
@@ -23,6 +22,8 @@ exports.validate = async (user) => {
         if(user.password === undefined){
             throw {message:'password is required', status:400};
         }
+
+
         //final check is to make sure that email should be unique and never been used in the system
         //note that we needed to escape the ' character in roder to make the sql statement works
         let sql = `SELECT ID, passwordSalt, password, deleted from user WHERE
@@ -62,7 +63,7 @@ exports.validate = async (user) => {
     }
 }
 
-exports.saveLogin = async (ip, browser, deviceDetails, succeeded) => {
+exports.saveLogin = async (username, ip, browser, deviceDetails, succeeded) => {
     try {
         //do some server validation here --> might not have collected anything so need to check
         //actually should always work
@@ -78,7 +79,7 @@ exports.saveLogin = async (ip, browser, deviceDetails, succeeded) => {
 
         const attemptDate = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() // get date
         const timeOfLogin = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() //get the time
-        let sql = `INSERT INTO loginhistory(attemptDate, succeeded, IP, browser, timeOfLogin, deviceDetails) VALUES("${attemptDate}", "${success}", "${ip}", "${browser}", "${timeOfLogin}", "${deviceDetails}")`;
+        let sql = `INSERT INTO loginhistory(username, attemptDate, succeeded, IP, browser, timeOfLogin, deviceDetails) VALUES("${username}", "${attemptDate}", "${success}", "${ip}", "${browser}", "${timeOfLogin}", "${deviceDetails}")`;
         const connection = await mysql.createConnection(info.config);
         var data = await connection.query(sql);
     } catch(err){
