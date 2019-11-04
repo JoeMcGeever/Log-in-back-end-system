@@ -35,11 +35,10 @@ router.post('/', bodyParser(), async (cnx, next) =>{
    //console.log(clientIP);
 
     let newUser = {
-       username : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.username, 
-       password : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.password,
+      username : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.username, 
+      password : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.password,
 
-      // username = cnx.request.body.values.username || undefined,
-      // password = cnx.request.body.values.password || undefined
+
     };
 
     console.log(newUser)
@@ -78,7 +77,6 @@ router.post('/', bodyParser(), async (cnx, next) =>{
       const payload = { sub: newUser.username }; //sub = subject; usually be a username/id which identifies a user
       const token = jwt.sign(payload, secret); //payload = actual data we want to store in token
       //and a secret key that we can sign the token with (only server will know)
-
       cnx.response.status = 201;
       cnx.body = token; //returns in the body, the JWT token
 
@@ -89,6 +87,7 @@ router.post('/', bodyParser(), async (cnx, next) =>{
       await model.saveLogin(newUser.username, clientIP, browser, deviceDetails, succeeded)
       cnx.response.status = error.status;
       cnx.body = error.message;
+      
    }
 
 });
