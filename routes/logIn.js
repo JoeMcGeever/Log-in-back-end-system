@@ -51,7 +51,7 @@ router.post('/', bodyParser(), async (cnx, next) =>{
       //::ffff:127.0.0.1 is correct, don't worry
       //::1 = local host
 
-      var userAgent = require('util').inspect(cnx.userAgent)
+     // var userAgent = require('util').inspect(cnx.userAgent)
 
       //console.log(userAgent)
 
@@ -60,7 +60,7 @@ router.post('/', bodyParser(), async (cnx, next) =>{
 
 
       //console.log(browser)
-      ..console.log(deviceDetails)
+      //console.log(deviceDetails)
 
       await model.validate(newUser);
       succeeded = true //no errors are ran so logged in successfully
