@@ -66,4 +66,21 @@ router.get('/getAll', authenticated, async (cnx, next) =>{
    }
 });
 
+
+router.get('/getAccountInfo',  authenticated, async (cnx, next) =>{
+
+   try {
+        const user = cnx.request.jwtPayload.sub
+        //console.log(user)
+        let results = await model.getAccountInfo(user)
+        //console.log(results)
+        cnx.response.status = 200
+        cnx.body = results
+   }
+   catch(error){
+      cnx.response.status = error.status;
+      cnx.body = {message:error.message};
+   }
+});
+
 module.exports = router;
