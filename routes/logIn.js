@@ -53,17 +53,15 @@ router.post('/', bodyParser(), async (cnx, next) =>{
 
       var userAgent = require('util').inspect(cnx.userAgent)
 
-      userAgent = userAgent.slice(1050)
       //console.log(userAgent)
-      const userAgentArray = userAgent.split("'");
-     // console.log(userAgentArray)
-      const posOfBrowser = userAgentArray.indexOf(",\n     version: ") - 1 //get pos in array of the browser of the user as it is one behind this entry always
-      const posOfPlaform = posOfBrowser + 6 //same but for platform
-      var browser = userAgentArray[posOfBrowser]
-      var deviceDetails = userAgentArray[posOfPlaform]
-      //https://www.npmjs.com/package/koa-useragent
+
+      var browser = cnx.userAgent.browser 
+      var deviceDetails = cnx.userAgent.platform 
+
+
       //console.log(browser)
-      //console.log(deviceDetails)
+      ..console.log(deviceDetails)
+
       await model.validate(newUser);
       succeeded = true //no errors are ran so logged in successfully
 
