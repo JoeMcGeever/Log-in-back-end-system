@@ -49,10 +49,10 @@ exports.validate = async (user) => {
 
         if(password == data[0].password) {
             console.log("Correct details");
-            return data[0].id;
+            return data[0].ID;
+        }else{
+            throw {message:'password does not match', status:400}
         }
-
-        return data;
 
     } catch (error) {
         //in case we caught an error that has no status defined then this is an error from our database

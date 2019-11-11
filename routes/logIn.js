@@ -71,10 +71,14 @@ router.post('/', bodyParser(), async (cnx, next) =>{
       await model.saveLogin(newUser.username, clientIP, browser, deviceDetails, succeeded)
 
 
+
       //for JWT session:
       const payload = { sub: newUser.username }; //sub = subject; usually be a username/id which identifies a user
       const token = jwt.sign(payload, secret); //payload = actual data we want to store in token
       //and a secret key that we can sign the token with (only server will know)
+
+
+      
       cnx.response.status = 201;
       cnx.body = token; //returns in the body, the JWT token
 
@@ -84,6 +88,8 @@ router.post('/', bodyParser(), async (cnx, next) =>{
    catch(error){
       await model.saveLogin(newUser.username, clientIP, browser, deviceDetails, succeeded)
       cnx.response.status = error.status;
+      console.log("Error:")
+      console.log(error)
       cnx.body = error.message;
       
    }
