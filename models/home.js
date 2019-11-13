@@ -5,10 +5,6 @@ var bcrypt = require('bcryptjs');
 
 var info = require('../config');
 
-//for JWT session
-const jwt = require('jsonwebtoken');
-const secret = process.env.JWT_SECRET || 'geheim'; //secret is the same for every token we sign
-//will be environment variable or our secret
 
 exports.delete = async (id) => {
     try {
@@ -91,11 +87,6 @@ exports.getAccountInfo = async (username) => {
 }
 
 exports.updateAccountInfo = async (jwtUsername, username, firstName, lastName, email, about, countryID, profileImageURL) => {
-    //update the JWT --> TALK ABOUT THIS IN YOUR REPORT
-    //UPDATED JWT TO HOLD THE NEW USERNAME INFO
-    //THIS SHOULD BE WHAT IS RETURNED
-    //this is so the look up username method
-    //to find detais will still work
     try {
         let sql = `UPDATE user
         SET username = \'${username}', firstName= \'${firstName}', lastName= \'${lastName}', email= \'${email}', about= \'${about}', countryID= \'${countryID}', profileImageURL= \'${profileImageURL}'
