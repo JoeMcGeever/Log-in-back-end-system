@@ -67,12 +67,43 @@ router.get('/getAll', authenticated, async (cnx, next) =>{
 });
 
 
-router.get('/getAccountInfo',  authenticated, async (cnx, next) =>{
+router.get('/getAccountInfo',  authenticated, bodyParser(), async (cnx, next) =>{
 
    try {
         const user = cnx.request.jwtPayload.sub
         //console.log(user)
         let results = await model.getAccountInfo(user)
+        //console.log(results)
+        cnx.response.status = 200
+        cnx.body = results
+   }
+   catch(error){
+      cnx.response.status = error.status;
+      cnx.body = {message:error.message};
+   }
+});
+//router.put('/updateInfo',  authenticated, async (cnx, next) =>{ SHOULD BE
+router.put('/updateInfo', authenticated, bodyParser(), async (cnx, next) =>{
+
+   const jwtUsername = cnx.request.jwtPayload.sub
+
+
+   let updatedAccount = {
+      username : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.username, 
+      firstName : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.firstName,
+      lastName : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.lastName,
+      email : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.email,
+      about : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.about,
+      countryID : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.countryID,
+      profileImageURL : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.profileImageURL,
+    };  
+    //validate data here as well!
+
+    console.log(updatedAccount)
+
+
+   try {
+        let results = await model.updateAccountInfo(jwtUsername, updatedAccount.username, updatedAccount.firstName, updatedAccount.lastName, updatedAccount.email, updatedAccount.about, updatedAccount.countryID, updatedAccount.profileImageURL)//SEND ALL DATA FROM CNX
         //console.log(results)
         cnx.response.status = 200
         cnx.body = results
