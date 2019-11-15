@@ -88,6 +88,24 @@ exports.getAccountInfo = async (username) => {
 
 exports.updateAccountInfo = async (jwtUsername, username, firstName, lastName, email, about, countryID, profileImageURL) => {
     try {
+
+
+
+        //validation here:
+        //need to validate: email (format), countryID (needs to be a number)
+
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zAZ]{2,}))$/;
+        if(!re.test(String(email).toLowerCase())){
+             throw {message:'email is not valid', status: 400};
+        }
+        if(isNaN(countryID)){
+            throw {message:'country ID must be a number', status: 400};
+        }
+
+
+
+
+
         let sql = `UPDATE user
         SET username = \'${username}', firstName= \'${firstName}', lastName= \'${lastName}', email= \'${email}', about= \'${about}', countryID= \'${countryID}', profileImageURL= \'${profileImageURL}'
         WHERE username = \'${jwtUsername}'`;
