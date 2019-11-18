@@ -7,9 +7,14 @@ const secret = process.env.JWT_SECRET || 'geheim';
 module.exports = async (cnx, next) => {
     //if no token is present, 403 error is thrown
     //console.log(cnx.headers.authorization)
-    const token = cnx.headers.authorization.split(' ')[1]; //read note above
-    if (token == "undefined") cnx.throw(403, 'No token.');
+    try {
+      const token = cnx.headers.authorization.split(' ')[1]; //read note above
+    } catch (err) {
+      cnx.throw(403, 'No token.');
+    }
+    //if (token == "undefined") cnx.throw(403, 'No token.');
     try { //verifies the token
+        const token = cnx.headers.authorization.split(' ')[1]; //read note above
         cnx.request.jwtPayload = jwt.verify(token, secret);
         //jwt.verify returns tokens payload (and sub (username of user))
         //it is set to ctx.request.jwtPayload

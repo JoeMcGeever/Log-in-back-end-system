@@ -46,19 +46,20 @@ router.get('/getOne/:id',  authenticated, async (cnx, next) =>{
    }
 });
 
-router.get('/getAll', authenticated, async (cnx, next) =>{ 
-   //NOTE
-   //THIS GETALL WILL ONLY WORK WHEN THE REQUESTS
-   //ARE SENT FROM AN AUTHORISED ACCOUNT
-   //I THINK THE HEADER WILL CONTAIN THE USERNAME
-   //IN ORDER TO BE USED FOR THE SEARCH
-   //WHEN SOMEONE LOGS IN
-   console.log("HI")
+router.get('/getAll/:pageNumber/:itemsPerPage', authenticated, async (cnx, next) =>{ 
    try{
-      let id = await model.getAll()
-      //console.log("Success")
+      const username = cnx.request.jwtPayload.sub
+
+      const pageNumber = cnx.params.pageNumber
+      const itemsPerPage = cnx.params.itemsPerPage
+
+      console.log(username + " searches for login history")
+      console.log("page number: " + pageNumber + " and items per page: " + itemsPerPage)
+
+      let results = await model.getAll(username, pageNumber, itemsPerPage)
+      console.log("Success")
       cnx.response.status = 201;
-      cnx.body = {message:id};
+      cnx.body = {message:results};
    }
    catch(error){
       cnx.response.status = error.status;
