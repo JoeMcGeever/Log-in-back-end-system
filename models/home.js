@@ -40,6 +40,45 @@ exports.delete = async (id) => {
     }
 }
 
+exports.getAll = async (username, pageNumber, itemsPerPage) => {
+    try {
+
+        let sql = `SELECT * from loginhistory WHERE  username = \'${username}'`
+        const connection = await mysql.createConnection(info.config);
+        const response = await connection.query(sql);
+        const totalNumber = response.length
+
+        itemsPerPage = parseInt(itemsPerPage, 10)
+        pageNumber = parseInt(pageNumber, 10)
+
+
+        //itemsPerPage may need to change if the totalNumber is less than the itemsPerPage + pageNumber*itemsPerPage
+        if(totalNumber/itemsPerPage < pageNumber){
+            throw {message:'no page for this result', status: 400};
+        }
+        
+        if((itemsPerPage + (itemsPerPage * pageNumber)) > totalNumber){
+            itemsPerPage = totalNumber - (itemsPerPage * pageNumber)
+        }
+
+        console.log("Number of entries: " + totalNumber + ". Items allowed per page: " + itemsPerPage + " and page " + pageNumber)
+
+        sql = `SELECT * from loginhistory WHERE
+                    username = \'${username}' ORDER BY attemptDate DESC
+                    LIMIT ${itemsPerPage} OFFSET ${(pageNumber-1)*itemsPerPage};`; 
+        console.log(sql)
+        var data = await connection.query(sql);
+        if(data.length == 0){
+            throw {message:'not found', status: 400};
+        } 
+        await connection.end();
+        return data
+    } catch (error) {
+        if(error.status === undefined)
+            error.status = 500;
+        throw error;
+    }
+}
 
 exports.getOne = async (id) => {
     try {
