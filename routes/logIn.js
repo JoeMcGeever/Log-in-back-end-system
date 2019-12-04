@@ -8,7 +8,7 @@ var model = require('../models/logIn.js');
 //for JWT session
 const jwt = require('jsonwebtoken');
 const secret = process.env.JWT_SECRET || 'geheim'; //secret is the same for every token we sign
-//will be environment variable or our secret
+//will be environment variable or our secret (geheim)
 
 var router = Router({
    prefix: '/api/v1.0/users'
