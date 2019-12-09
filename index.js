@@ -15,14 +15,10 @@ app.use(userAgent); //gets the user agent
 
 //http://localhost:3000/api/v1.0 -> at this route, display logIn
 //Routes will go here
-//maybe one for google/twitter/facebook however I think these re-route to their own websites so we don't need to care
-//google does i think anyway 
+
 var logIn = require('./routes/logIn.js')
 var admin = require('./routes/admin.js')
 var home = require('./routes/home.js')
-
-
-//var googleLogin = require('./routes/passportGoogleAuth.js')
 
 
 app.use(cors()); 
@@ -31,7 +27,6 @@ app.use(admin.routes());
 app.use(home.routes());
 
 
-//app.use(googleLogin.routes());
 //set to be the environment/deployment port number or 3000 if there isnt one
 var port = process.env.PORT || 5000; 
 
