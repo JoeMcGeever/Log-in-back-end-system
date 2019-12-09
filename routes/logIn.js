@@ -19,20 +19,14 @@ var bodyParser = require('koa-bodyparser');
 
 
 
+router.post('/', bodyParser(), async (cnx, next) =>{ //logs a user in 
 
-
-//note that we have injected the body parser onlyin the POST request
-router.post('/', bodyParser(), async (cnx, next) =>{
-
-    //console.log(cnx.request.body);
-    //prevent server crash if values is undefined
-    //console.log(cnx.request.body.username);
 
     let succeeded = false
-    console.log(cnx.request.body)
+    //console.log(cnx.request.body)
 
-   const clientIP = cnx.request.ip;
-   //console.log(clientIP);
+   const clientIP = cnx.request.ip; //gets client IP
+
 
     let newUser = {
       username : cnx.request.body.values === undefined ? undefined: cnx.request.body.values.username, 
@@ -41,31 +35,21 @@ router.post('/', bodyParser(), async (cnx, next) =>{
 
     };
 
-    console.log(newUser)
    try{
       
-
       //added app.proxy=true in index for this to work
       //installed koa-useragent
       //https://stackoverflow.com/questions/29411551/express-js-req-ip-is-returning-ffff127-0-0-1
-      //::ffff:127.0.0.1 is correct, don't worry
-      //::1 = local host
-
+      //::ffff:127.0.0.1 and ::1 == local host
      // var userAgent = require('util').inspect(cnx.userAgent)
 
-      //console.log(userAgent)
 
       var browser = cnx.userAgent.browser 
       var deviceDetails = cnx.userAgent.platform 
 
 
-      //console.log(browser)
-      //console.log(deviceDetails)
-
       await model.validate(newUser);
       succeeded = true //no errors are ran so logged in successfully
-
-
 
 
       await model.saveLogin(newUser.username, clientIP, browser, deviceDetails, succeeded)
@@ -88,8 +72,8 @@ router.post('/', bodyParser(), async (cnx, next) =>{
    catch(error){
       await model.saveLogin(newUser.username, clientIP, browser, deviceDetails, succeeded)
       cnx.response.status = error.status;
-      console.log("Error:")
-      console.log(error)
+      //console.log("Error:")
+      //console.log(error)
       cnx.body = error.message;
       
    }

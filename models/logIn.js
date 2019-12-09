@@ -8,13 +8,13 @@ var info = require('../config');
 
 
 
-exports.validate = async (user) => {
+exports.validate = async (user) => { //validates whether the user login details are correct
     try {
         //NOTE: FOR USER SAVED IN DB:
         //USERNAME = "Joseph", PASSWORD = "Joseph"
 
         //server validation rules 
-        //email is required        
+        //username is required        
         if(user.username === undefined){
             throw {message:'username is required', status:400};
         }
@@ -22,7 +22,6 @@ exports.validate = async (user) => {
         if(user.password === undefined){
             throw {message:'password is required', status:400};
         }
-
 
         //final check is to make sure that email should be unique and never been used in the system
         //note that we needed to escape the ' character in roder to make the sql statement works
@@ -48,15 +47,14 @@ exports.validate = async (user) => {
         await connection.end();
 
         if(password == data[0].password) {
-            console.log("Correct details");
+            //console.log("Correct details");
             return data[0].ID;
         }else{
             throw {message:'password does not match', status:400}
         }
 
     } catch (error) {
-        //in case we caught an error that has no status defined then this is an error from our database
-        //therefore we should set the status code to server error
+
         if(error.status === undefined)
             error.status = 500;
         throw error;
@@ -64,10 +62,8 @@ exports.validate = async (user) => {
 }
 
 exports.saveLogin = async (username, ip, browser, deviceDetails, succeeded) => {
+    //saves each login device details to the database
     try {
-        //do some server validation here --> might not have collected anything so need to check
-        //actually should always work
-        //unless phantom request :shrug:
         let success = 1
 
         //DATE - format YYYY-MM-DD

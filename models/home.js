@@ -6,9 +6,8 @@ var bcrypt = require('bcryptjs');
 var info = require('../config');
 
 
-exports.delete = async (id) => {
+exports.delete = async (id) => { //deletes an account
     try {
-
 
         //server validation rules 
         //note that we needed to escape the ' character in roder to make the sql statement works
@@ -29,7 +28,7 @@ exports.delete = async (id) => {
                    WHERE id = \'${id}'`;
         connection.query(sql, function (err, result) {
             if (err) throw err;
-            console.log("Deleted!");
+            //console.log("Deleted!");
           });
         } 
         await connection.end();
@@ -40,7 +39,7 @@ exports.delete = async (id) => {
     }
 }
 
-exports.getAll = async (username, pageNumber, itemsPerPage) => {
+exports.getAll = async (username, pageNumber, itemsPerPage) => { //returns login history (pagination)
     try {
 
         let sql = `SELECT * from loginhistory WHERE  username = \'${username}'`
@@ -52,7 +51,6 @@ exports.getAll = async (username, pageNumber, itemsPerPage) => {
         pageNumber = parseInt(pageNumber, 10)
 
 
-        //itemsPerPage may need to change if the totalNumber is less than the itemsPerPage + pageNumber*itemsPerPage
         if(totalNumber/itemsPerPage < pageNumber){
             throw {message:'no page for this result', status: 400};
         }
@@ -61,12 +59,11 @@ exports.getAll = async (username, pageNumber, itemsPerPage) => {
             itemsPerPage = totalNumber - (itemsPerPage * pageNumber)
         }
 
-        console.log("Number of entries: " + totalNumber + ". Items allowed per page: " + itemsPerPage + " and page " + pageNumber)
+        //console.log("Number of entries: " + totalNumber + ". Items allowed per page: " + itemsPerPage + " and page " + pageNumber)
 
         sql = `SELECT * from loginhistory WHERE
                     username = \'${username}' ORDER BY attemptDate DESC
                     LIMIT ${itemsPerPage} OFFSET ${(pageNumber-1)*itemsPerPage};`; 
-        console.log(sql)
         var data = await connection.query(sql);
         if(data.length == 0){
             throw {message:'not found', status: 400};
@@ -80,7 +77,7 @@ exports.getAll = async (username, pageNumber, itemsPerPage) => {
     }
 }
 
-exports.getOne = async (id) => {
+exports.getOne = async (id) => { //returns one instance of login history (by id)
     try {
 
         let sql = `SELECT * from loginhistory WHERE
@@ -103,9 +100,8 @@ exports.getOne = async (id) => {
 
 
 
-exports.getAccountInfo = async (username) => {
+exports.getAccountInfo = async (username) => { //returns all account info for a specific username
     try {
-        //maybe profile image if nourah implements
         let sql = `SELECT username, firstName, lastName, email, about, dateRegistered, countryID, profileImageURL from user WHERE
                     username = \'${username}'`;
         const connection = await mysql.createConnection(info.config);
@@ -126,9 +122,8 @@ exports.getAccountInfo = async (username) => {
 }
 
 exports.updateAccountInfo = async (jwtUsername, username, firstName, lastName, email, about, countryID, profileImageURL) => {
+    //updates the account info for a specific user
     try {
-
-
 
         //validation here:
         //need to validate: email (format), countryID (needs to be a number)
@@ -142,20 +137,17 @@ exports.updateAccountInfo = async (jwtUsername, username, firstName, lastName, e
         }
 
 
-
-
-
         let sql = `UPDATE user
         SET username = \'${username}', firstName= \'${firstName}', lastName= \'${lastName}', email= \'${email}', about= \'${about}', countryID= \'${countryID}', profileImageURL= \'${profileImageURL}'
         WHERE username = \'${jwtUsername}'`;
         const connection = await mysql.createConnection(info.config);
         connection.query(sql, function (err, result) {
             if (err) throw err;
-            console.log("Updated");
+            //console.log("Updated");
           });
         await connection.end();
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         if(error.status === undefined)
             error.status = 500;
         throw error;

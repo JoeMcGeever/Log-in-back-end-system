@@ -14,7 +14,7 @@ var bodyParser = require('koa-bodyparser');
 const authenticated = require('../middleware/authenticated');
 
 //note that we have injected the body parser onlyin the POST request
-router.delete('/delete/:id', bodyParser(), async (cnx, next) =>{
+router.delete('/delete/:id', bodyParser(), async (cnx, next) =>{ //deletes an account through a specific ID
    //console.log(cnx.params.id) //how to get the passed id
    try{
       let id = await model.delete(cnx.params.id);
@@ -29,9 +29,10 @@ router.delete('/delete/:id', bodyParser(), async (cnx, next) =>{
 
 
 router.get('/getOne/:id',  authenticated, async (cnx, next) =>{
+   //returns the login history of one specific instance
    try{
       let id = await model.getOne(cnx.params.id)
-      console.log("Success")
+      //console.log("Success")
       //console.log(id)
       //attemptDate: 2019-10-30T00:00:00.000Z
       let date = String(id[0].attemptDate)
@@ -47,17 +48,18 @@ router.get('/getOne/:id',  authenticated, async (cnx, next) =>{
 });
 
 router.get('/getAll/:pageNumber/:itemsPerPage', authenticated, async (cnx, next) =>{ 
+   //returns all login history (with pagination)
    try{
       const username = cnx.request.jwtPayload.sub
 
       const pageNumber = cnx.params.pageNumber
       const itemsPerPage = cnx.params.itemsPerPage
 
-      console.log(username + " searches for login history")
-      console.log("page number: " + pageNumber + " and items per page: " + itemsPerPage)
+      //console.log(username + " searches for login history")
+      //console.log("page number: " + pageNumber + " and items per page: " + itemsPerPage)
 
       let results = await model.getAll(username, pageNumber, itemsPerPage)
-      console.log("Success")
+      //console.log("Success")
       cnx.response.status = 201;
       cnx.body = {message:results};
    }
@@ -69,7 +71,7 @@ router.get('/getAll/:pageNumber/:itemsPerPage', authenticated, async (cnx, next)
 
 
 router.get('/getAccountInfo',  authenticated, bodyParser(), async (cnx, next) =>{
-
+   //returns teh account info for the current logged in user
    try {
         const user = cnx.request.jwtPayload.sub
         //console.log(user)
@@ -83,9 +85,9 @@ router.get('/getAccountInfo',  authenticated, bodyParser(), async (cnx, next) =>
       cnx.body = {message:error.message};
    }
 });
-//router.put('/updateInfo',  authenticated, async (cnx, next) =>{ SHOULD BE
-router.put('/updateInfo', authenticated, bodyParser(), async (cnx, next) =>{
 
+router.put('/updateInfo', authenticated, bodyParser(), async (cnx, next) =>{
+   //updates the account info for the signed in user
    const jwtUsername = cnx.request.jwtPayload.sub
 
 
@@ -100,7 +102,7 @@ router.put('/updateInfo', authenticated, bodyParser(), async (cnx, next) =>{
     };  
     //validate data here as well!
 
-    console.log(updatedAccount)
+    //console.log(updatedAccount)
 
 
    try {
